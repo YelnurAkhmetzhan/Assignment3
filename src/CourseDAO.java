@@ -6,7 +6,8 @@ public class CourseDAO {
         String sql = "INSERT INTO course (id, name, credits) VALUES (?, ?, ?)";
 
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql))
+        {
 
             stmt.setString(1, course.getId());
             stmt.setString(2, course.getName());

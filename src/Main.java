@@ -1,43 +1,91 @@
+import java.sql.SQLException;
+import java.util.Scanner;
+
 public class Main {
-    public static void main(String[] args) throws Exception {
 
-        // DAO
+    public static void main(String[] args) {
         CourseDAO dao = new CourseDAO();
+        Scanner sc = new Scanner(System.in);
 
-        // Courses
-        Course oop = new Course("Object Oriented Programming", 25, "CS101");
-        Course db = new Course("Databases", 24, "CS202");
+        while (true) {
+            System.out.println("1) Add course");
+            System.out.println("2) Show all courses");
+            System.out.println("3) Update credits");
+            System.out.println("4) Delete course");
+            System.out.println("5) Exit");
+            System.out.print("Choose (1-5): ");
 
-        // CRUD
-        dao.insert(oop);
-        dao.insert(db);
-        dao.readAll();
+            int a = sc.nextInt();
+            sc.nextLine(); // очистить Enter после nextInt()
 
-        dao.updateCredits("CS101", 30);
-        dao.readAll();
+            switch (a) {
+                case 1: {
+                    System.out.print("Course id: ");
+                    String id = sc.nextLine();
 
-        dao.delete("CS202");
+                    System.out.print("Course name: ");
+                    String name = sc.nextLine();
 
-        // Professors
-        Professor prof1 = new Professor("Dr. Smith", "Computer Science", "smith@email.com");
-        Professor prof2 = new Professor("Dr. Brown", "Computer Science", "brown@email.com");
+                    System.out.print("Credits: ");
+                    int credits = sc.nextInt();
+                    sc.nextLine();
 
-        // University
-        University university = new University("AITU", "Astana");
+                    try {
+                        dao.insert(new Course(name, credits, id));
+                        System.out.println("Inserted.");
+                    } catch (SQLException e) {
+                        System.out.println("Insert error: " + e.getMessage());
+                    }
+                    break;
+                }
 
-//        university.addCourse(oop);
-//        university.addProfessor(prof1);
-//        university.addProfessor(prof2);
-//
-//        System.out.println(university);
-//
-//        System.out.println("Courses with >= 25 credits:");
-//        System.out.println(university.filterCoursesByCredits(25));
-//
-//        System.out.println("Find course CS101:");
-//        System.out.println(university.findCourseById("CS101"));
-//
-//        Person p = prof1;
-//        System.out.println("Role: " + p.getRole());
+                case 2: {
+                    try {
+                        dao.readAll();
+                    } catch (SQLException e) {
+                        System.out.println("Read error: " + e.getMessage());
+                    }
+                    break;
+                }
+
+                case 3: {
+                    System.out.print("Course id to update: ");
+                    String id = sc.nextLine();
+
+                    System.out.print("New credits: ");
+                    int newCredits = sc.nextInt();
+                    sc.nextLine();
+
+                    try {
+                        dao.updateCredits(id, newCredits);
+                        System.out.println("Updated (if id existed).");
+                    } catch (SQLException e) {
+                        System.out.println("Update error: " + e.getMessage());
+                    }
+                    break;
+                }
+
+                case 4: {
+                    System.out.print("Course id to delete: ");
+                    String id = sc.nextLine();
+
+                    try {
+                        dao.delete(id);
+                        System.out.println("Deleted (if id existed).");
+                    } catch (SQLException e) {
+                        System.out.println("Delete error: " + e.getMessage());
+                    }
+                    break;
+                }
+
+                case 5:
+                    System.out.println("Bye!");
+                    sc.close();
+                    return;
+
+                default:
+                    System.out.println("Wrong option. Choose 1-5.");
+            }
+        }
     }
 }
